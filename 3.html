@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertically Stacked Cards Demo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and Babel for JSX transpilation -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb; /* bg-gray-50 */
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- SVG Icon Components ---
+        // These are functional React components that render SVG icons.
+        const StudyAbroadIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 12h20M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20z"/><path d="M12 2v20c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z"/></svg>;
+        const CareerLaunchpadIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.3.05-3.1S6.05 15.79 4.5 16.5z"/><path d="M17.5 7.5c1.5-1.26 2-5 2-5s-3.74.5-5 2c-.71.84-.7 2.3-.05 3.1s2.3.71 3.05-.01z"/><path d="m22 2-7 20-4-4-4 4L2 9l20-7zm-12 8-4 4"/><path d="m14 6 4-4"/></svg>;
+        const ProfessionalCoursesIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>;
+        const HealthCareIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>;
+
+        // --- Data for the Program Cards ---
+        // This data remains the same, but we will shuffle its order dynamically.
+        const programData = [
+            { title: 'Study Abroad', Icon: StudyAbroadIcon, description: 'Your passport to a global education and international career opportunities.', color: 'cyan', href: '#' },
+            { title: 'Career Launchpad', Icon: CareerLaunchpadIcon, description: 'Accelerate your career with our industry-focused launchpad programs.', color: 'blue', href: '#' },
+            { title: 'Professional Courses', Icon: ProfessionalCoursesIcon, description: 'Master in-demand skills with courses led by industry experts.', color: 'yellow', href: '#' },
+            { title: 'HealthCare Jobs', Icon: HealthCareIcon, description: 'Find your dream healthcare job in Germany and other top destinations.', color: 'red', href: '#' },
+        ];
+        
+        // --- Color Variants for Tailwind CSS ---
+        const colorVariants = {
+            cyan: { bg: 'bg-cyan-50', text: 'text-cyan-800', border: 'hover:border-cyan-500', button: 'bg-cyan-500 hover:bg-cyan-600' },
+            blue: { bg: 'bg-blue-50', text: 'text-blue-800', border: 'hover:border-blue-500', button: 'bg-blue-500 hover:bg-blue-600' },
+            yellow: { bg: 'bg-yellow-50', text: 'text-yellow-800', border: 'hover:border-yellow-500', button: 'bg-yellow-500 hover:bg-yellow-600' },
+            red: { bg: 'bg-red-50', text: 'text-red-800', border: 'hover:border-red-500', button: 'bg-red-500 hover:bg-red-600' },
+        };
+
+        // --- The Program Card Component ---
+        // No changes needed here. The existing transitions handle the movement.
+        const ProgramCard = ({ item, isHovered, onHover, zIndex }) => {
+            const { Icon, title, description, color, href } = item;
+            const variants = colorVariants[color];
+            
+            return (
+                <div 
+                    onMouseEnter={onHover}
+                    className={`relative transition-all duration-1000 ease-in-out cursor-pointer`}
+                    style={{ 
+                        transform: isHovered ? 'translateY(-20px)' : 'translateY(0)',
+                        zIndex: isHovered ? 10 : zIndex 
+                    }}
+                >
+                    <div className={`p-6 rounded-2xl border-2 border-transparent shadow-lg transition-all duration-300 ${variants.bg} ${variants.border}`}>
+                        <div className="flex items-start justify-between">
+                            <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${variants.text} bg-white/60 shadow-inner`}>
+                                <Icon className="w-6 h-6" />
+                            </div>
+                        </div>
+                        <h3 className={`mt-4 text-xl font-bold ${variants.text}`}>{title}</h3>
+                        <div 
+                            className="transition-all duration-500 ease-in-out overflow-hidden"
+                            style={{ maxHeight: isHovered ? '200px' : '0px' }}
+                        >
+                            <p className="mt-2 text-gray-600 leading-relaxed">{description}</p>
+                            <a href={href} className={`inline-block mt-4 px-5 py-2 rounded-lg text-sm font-semibold text-white ${variants.button} transition-colors`}>
+                                Learn More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- The Main App Component ---
+        const App = () => {
+            // State to hold the shuffled order of cards
+            const [shuffledData, setShuffledData] = React.useState(programData);
+            // State to track the hovered card by its unique title, not its index
+            const [hoveredTitle, setHoveredTitle] = React.useState(null);
+
+            // --- NEW: useEffect for shuffling ---
+            // This effect runs once when the component mounts to set up a recurring shuffle.
+            React.useEffect(() => {
+                const shuffleInterval = setInterval(() => {
+                    // We update the state with a newly shuffled version of the array.
+                    setShuffledData(currentData => {
+                        // Using the Fisher-Yates shuffle algorithm for an unbiased shuffle.
+                        const newArray = [...currentData];
+                        for (let i = newArray.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+                        }
+                        return newArray;
+                    });
+                }, 3000); // Shuffle the cards every 3 seconds (3000ms)
+
+                // Cleanup function: This is crucial to stop the interval when the component is no longer on screen.
+                return () => clearInterval(shuffleInterval);
+            }, []); // The empty dependency array [] means this effect runs only once.
+
+            return (
+                <div className="min-h-screen w-full bg-gray-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 max-w-6xl w-full">
+                        
+                        {/* Left Column: Main Content */}
+                        <div className="flex flex-col justify-center text-center md:text-left">
+                            <h1 className="text-5xl lg:text-6xl font-black text-gray-800 tracking-tight leading-tight">
+                                India's #1 Career Accelerator
+                            </h1>
+                            <p className="mt-6 text-xl text-gray-600 leading-relaxed max-w-lg mx-auto md:mx-0">
+                                We offer industry-leading & career-focused training to enhance your skills, secure a meaningful career, and bring your study-abroad dream a reality.
+                            </p>
+                            <a href="#" className="inline-block mt-10 px-8 py-4 rounded-lg font-semibold text-white bg-red-500 hover:bg-red-600 transition-all duration-300 text-lg w-fit mx-auto md:mx-0 shadow-lg hover:shadow-xl hover:-translate-y-1">
+                                Start Your Journey
+                            </a>
+                        </div>
+
+                        {/* Right Column: Interactive Stacked Cards */}
+                        <div 
+                            className="relative flex flex-col justify-center space-y-[-70px]"
+                            onMouseLeave={() => setHoveredTitle(null)}
+                        >
+                            {/* We now map over the SHUFFLED data state */}
+                            {shuffledData.map((item, index) => (
+                                <ProgramCard
+                                    key={item.title} // The key is essential for React to track elements
+                                    item={item}
+                                    zIndex={shuffledData.length - index} // Ensure proper stacking order
+                                    isHovered={item.title === hoveredTitle}
+                                    onHover={() => setHoveredTitle(item.title)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Render the App ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>
